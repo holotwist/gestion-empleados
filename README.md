@@ -101,5 +101,4 @@ La aplicación permite:
 ## Licencia
 
 Este proyecto está licenciado bajo la [Licencia MIT](LICENSE).
-```
 
