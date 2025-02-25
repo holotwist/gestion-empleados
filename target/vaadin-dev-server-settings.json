@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/src/main/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/src/main/frontend/generated/jar-resources",
+  "staticOutput": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/classes/META-INF/VAADIN/webapp",
+  "devBundleOutput": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/dev-bundle/config",
+  "jarResourcesFolder": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/src/main/frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "/home/namu/Universidad del Quindío/Programación II/Prácticas/GestionEmpleados/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
