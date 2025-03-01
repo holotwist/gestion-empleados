@@ -11,8 +11,8 @@ import java.util.List;
 
 public class EmpleadoForm extends FormLayout {
 
-    private TextField nombre = new TextField("Nombre");
-    private ComboBox<Departamento> departamento = new ComboBox<>("Departamento");
+    public TextField nombre = new TextField("Nombre");
+    public ComboBox<Departamento> departamento = new ComboBox<>("Departamento");
 
     Binder<Empleado> binder = new Binder<>(Empleado.class);
 

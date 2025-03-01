@@ -7,8 +7,8 @@ import com.vaadin.flow.data.binder.Binder;
 
 public class DepartamentoForm extends FormLayout {
 
-    private TextField nombre = new TextField("Nombre");
-    private TextField codigo = new TextField("Código");
+    public TextField nombre = new TextField("Nombre");
+    public TextField codigo = new TextField("Código");
 
     Binder<Departamento> binder = new Binder<>(Departamento.class);
 

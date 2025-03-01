@@ -10,9 +10,9 @@ import com.vaadin.flow.component.select.Select;
 
 public class ProyectoForm extends FormLayout {
 
-    private TextField nombre = new TextField("Nombre");
-    private TextField codigo = new TextField("Código");
-    private Select<Empleado> empleadosSelect = new Select<>(); // MODF: Cambia a Select para selección única
+    public TextField nombre = new TextField("Nombre");
+    public TextField codigo = new TextField("Código");
+    public Select<Empleado> empleadosSelect = new Select<>(); // MODF: Cambia a Select para selección única
 
     Binder<Proyecto> binder = new Binder<>(Proyecto.class);
 
@@ -33,10 +33,16 @@ public class ProyectoForm extends FormLayout {
       /*  binder.forField(empleadosSelect)
                 .bind(Proyecto::getEmpleados, Proyecto::setEmpleados);*/
 
-        //binder.bindInstanceFields(this); // HACK: Se elimina esta línea, ya que no se puede enlazar automáticamente la lista de empleados, Vaadin da error
+        binder.bindInstanceFields(this); // Se puede volver a poner bindInstanceFields, debido a que se hicieron publicos los campos
     }
 
     public void setProyecto(Proyecto proyecto) {
         binder.setBean(proyecto);
+        // Establecer el valor del Select.  Si no se hace, el componente no muestra la selección actual.
+        if (proyecto != null && proyecto.getEmpleados() != null && !proyecto.getEmpleados().isEmpty()) {
+            empleadosSelect.setValue(proyecto.getEmpleados().get(0)); // Suponiendo selección única.
+        } else {
+            empleadosSelect.clear(); // Limpia la selección si no hay empleados.
+        }
     }
 }
