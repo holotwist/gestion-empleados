@@ -1,9 +1,12 @@
 package com.unilabs.gestionempleados.service;
 
 import com.unilabs.gestionempleados.model.Empleado;
+import com.unilabs.gestionempleados.model.Proyecto;
 import com.unilabs.gestionempleados.repository.EmpleadoRepository;
+import com.unilabs.gestionempleados.repository.ProyectoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +15,12 @@ import java.util.Optional;
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
+    private final ProyectoRepository proyectoRepository;
 
     @Autowired
-    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+    public EmpleadoService(EmpleadoRepository empleadoRepository, ProyectoRepository proyectoRepository) {
         this.empleadoRepository = empleadoRepository;
+        this.proyectoRepository = proyectoRepository;
     }
 
     public List<Empleado> obtenerTodosLosEmpleados() {
@@ -30,11 +35,17 @@ public class EmpleadoService {
         return empleadoRepository.save(empleado);
     }
 
+    @Transactional
     public void eliminarEmpleado(Long id) {
-        empleadoRepository.deleteById(id);
+        Empleado empleado = empleadoRepository.findById(id).orElse(null);
+        if (empleado != null) {
+            // Se usa el método personalizado, optimizando la búsqueda
+            List<Proyecto> proyectos = proyectoRepository.findByEmpleadosContaining(empleado);
+            for (Proyecto proyecto : proyectos) {
+                proyecto.getEmpleados().remove(empleado);
+                proyectoRepository.save(proyecto);  // Guarda el proyecto actualizado
+            }
+            empleadoRepository.deleteById(id);
+        }
     }
-
-    // TODO: agregar más métodos de lógica de negocio relacionados con empleados
-    // Ejemplo:
-    // public List<Empleado> buscarEmpleadosPorNombre(String nombre) { ... }
 }

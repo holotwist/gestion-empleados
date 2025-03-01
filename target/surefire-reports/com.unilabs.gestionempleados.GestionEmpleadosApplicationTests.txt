@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.unilabs.gestionempleados.GestionEmpleadosApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.52 s -- in com.unilabs.gestionempleados.GestionEmpleadosApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.06 s -- in com.unilabs.gestionempleados.GestionEmpleadosApplicationTests

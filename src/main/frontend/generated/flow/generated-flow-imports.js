@@ -11,7 +11,7 @@ import 'Frontend/generated/jar-resources/ReactRouterOutletElement.tsx';
 const loadOnDemand = (key) => {
   const pending = [];
   if (key === '31123a1714771dd481d8c51f26a06dad6384c17b6623dc1ab45fe65bf8fd6c69') {
-    pending.push(import('./chunks/chunk-0254c5147f5bfcfffdbde6e25b37cdb43e3330b3722045bbe1336439c6b87002.js'));
+    pending.push(import('./chunks/chunk-61fbdd7b97e53e0584e098ccdcebe657edf78a6c2b415d913879455d6e7cfe20.js'));
   }
   return Promise.all(pending);
 }

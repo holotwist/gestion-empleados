@@ -3,6 +3,8 @@ package com.unilabs.gestionempleados.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.persistence.*;
+import lombok.ToString;
+
 import java.util.List;
 
 @Entity
@@ -21,6 +23,7 @@ public class Departamento {
     @OneToMany(mappedBy = "departamento", fetch = FetchType.EAGER) // HACK: No es recomendable usar EAGER
                                                                     // ya que puede hacer las consultas más pesadas,
                                                                     // pero así solucionamos rapidamente un error, más adelante cambiar a Lazy
+    @ToString.Exclude // Excluir empleados del toString(), genera problemas de recursión
     private List<Empleado> empleados;  // Lista de empleados en este departamento
 
 }

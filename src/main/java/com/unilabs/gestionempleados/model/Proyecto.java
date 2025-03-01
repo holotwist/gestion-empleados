@@ -3,6 +3,8 @@ package com.unilabs.gestionempleados.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.persistence.*;
+import lombok.ToString;
+
 import java.util.List;
 
 @Entity
@@ -24,6 +26,7 @@ public class Proyecto {
             joinColumns = @JoinColumn(name = "proyecto_id"),
             inverseJoinColumns = @JoinColumn(name = "empleado_id")
     )
+    @ToString.Exclude
     private List<Empleado> empleados; // Lista de empleados asignados a este proyecto
 
 }
