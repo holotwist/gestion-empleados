@@ -17,8 +17,8 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-// Se define la ruta de acceso a este View
 @Route("main")
 public class MainView extends VerticalLayout {
 
@@ -32,18 +32,12 @@ public class MainView extends VerticalLayout {
     private Grid<Proyecto> proyectoGrid = new Grid<>(Proyecto.class);
 
     private Button mostrarContribucionButton = new Button("Mostrar Contribución");
-
-    //Botones para empleados
     private Button addEmpleadoButton = new Button("Añadir Empleado");
     private Button editEmpleadoButton = new Button("Editar Empleado");
     private Button deleteEmpleadoButton = new Button("Eliminar Empleado");
-
-    //Botones para departamentos
     private Button addDepartamentoButton = new Button("Añadir Departamento");
     private Button editDepartamentoButton = new Button("Editar Departamento");
     private Button deleteDepartamentoButton = new Button("Eliminar Departamento");
-
-    //Botones para proyectos
     private Button addProyectoButton = new Button("Añadir Proyecto");
     private Button editProyectoButton = new Button("Editar Proyecto");
     private Button deleteProyectoButton = new Button("Eliminar Proyecto");
@@ -62,7 +56,6 @@ public class MainView extends VerticalLayout {
         configurarGrids();
         configurarDatosGrids();
 
-        //Configuracion de los formularios
         List<Departamento> departamentos = departamentoService.obtenerTodosLosDepartamentos();
         List<Empleado> empleados = empleadoService.obtenerTodosLosEmpleados();
 
@@ -71,51 +64,66 @@ public class MainView extends VerticalLayout {
         proyectoForm = new ProyectoForm(empleados);
 
         mostrarContribucionButton.addClickListener(event -> mostrarContribucion());
-
-        //Listeners para empleados
         addEmpleadoButton.addClickListener(event -> addEmpleado());
         editEmpleadoButton.addClickListener(event -> editEmpleado());
         deleteEmpleadoButton.addClickListener(event -> deleteEmpleado());
-
-        //Listeners para departamentos
         addDepartamentoButton.addClickListener(event -> addDepartamento());
         editDepartamentoButton.addClickListener(event -> editDepartamento());
         deleteDepartamentoButton.addClickListener(event -> deleteDepartamento());
-
-        //Listeners para proyectos
         addProyectoButton.addClickListener(event -> addProyecto());
         editProyectoButton.addClickListener(event -> editProyecto());
         deleteProyectoButton.addClickListener(event -> deleteProyecto());
 
-
-        //Layout para los botones de empleados
-        HorizontalLayout empleadoButtonsLayout = new HorizontalLayout(addEmpleadoButton,editEmpleadoButton,deleteEmpleadoButton);
-
-        //Layout para los botones de departamentos
-        HorizontalLayout departamentoButtonsLayout = new HorizontalLayout(addDepartamentoButton,editDepartamentoButton,deleteDepartamentoButton);
-
-        //Layout para los botones de proyectos
-        HorizontalLayout proyectoButtonsLayout = new HorizontalLayout(addProyectoButton,editProyectoButton,deleteProyectoButton);
+        HorizontalLayout empleadoButtonsLayout = new HorizontalLayout(addEmpleadoButton, editEmpleadoButton, deleteEmpleadoButton);
+        HorizontalLayout departamentoButtonsLayout = new HorizontalLayout(addDepartamentoButton, editDepartamentoButton, deleteDepartamentoButton);
+        HorizontalLayout proyectoButtonsLayout = new HorizontalLayout(addProyectoButton, editProyectoButton, deleteProyectoButton);
 
         add(empleadoGrid, empleadoButtonsLayout, departamentoGrid, departamentoButtonsLayout, proyectoGrid, proyectoButtonsLayout, mostrarContribucionButton);
     }
 
     private void configurarGrids() {
-        // Configura las columnas que se mostrarán en la grilla de empleados
-        empleadoGrid.addColumn(Empleado::getId).setHeader("ID");
-        empleadoGrid.addColumn(Empleado::getNombre).setHeader("Nombre");
-        empleadoGrid.addColumn(empleado -> empleado.getDepartamento() != null ? empleado.getDepartamento().getNombre() : "").setHeader("Departamento");
+        // setColumns() reemplaza las columnas por defecto.
+        empleadoGrid.setColumns("id", "nombre");
+        empleadoGrid.addColumn(empleado -> empleado.getDepartamento() != null ? empleado.getDepartamento().getNombre() : "")
+                .setHeader("Departamento");
 
-        // Configura las columnas que se mostrarán en la grilla de departamentos
-        departamentoGrid.addColumn(Departamento::getId).setHeader("ID");
-        departamentoGrid.addColumn(Departamento::getNombre).setHeader("Nombre");
-        departamentoGrid.addColumn(Departamento::getCodigo).setHeader("Código");
+        // Departamentos: Botón de detalles.
+        departamentoGrid.setColumns("id", "nombre", "codigo");
+        departamentoGrid.addComponentColumn(this::createEmpleadoDetailsButton)
+                .setHeader("Empleados"); // Usamos el método creado.
 
-        // Configura las columnas que se mostrarán en la grilla de proyectos
-        proyectoGrid.addColumn(Proyecto::getId).setHeader("ID");
-        proyectoGrid.addColumn(Proyecto::getNombre).setHeader("Nombre");
-        proyectoGrid.addColumn(Proyecto::getCodigo).setHeader("Código");
+        // Proyectos: Botón de detalles.
+        proyectoGrid.setColumns("id", "nombre", "codigo");
+        proyectoGrid.addComponentColumn(this::createProyectoDetailsButton)
+                .setHeader("Empleados");
     }
+
+    private Button createEmpleadoDetailsButton(Departamento departamento) {
+        Button detailsButton = new Button("View Details");
+        detailsButton.addClickListener(event -> showEmpleadoDetails(departamento.getEmpleados()));
+        return detailsButton;
+    }
+
+    private Button createProyectoDetailsButton(Proyecto proyecto) {
+        Button detailsButton = new Button("View Details");
+        detailsButton.addClickListener(event -> showEmpleadoDetails(proyecto.getEmpleados()));
+        return detailsButton;
+    }
+
+
+    private void showEmpleadoDetails(List<Empleado> empleados) {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("400px");
+
+        // Crea una nueva grilla dentro del diálogo.
+        Grid<Empleado> detailsGrid = new Grid<>(Empleado.class);
+        detailsGrid.setColumns("id", "nombre");
+        detailsGrid.setItems(empleados);
+
+        dialog.add(detailsGrid);
+        dialog.open();
+    }
+
 
     private void configurarDatosGrids() {
         empleadoGrid.setItems(empleadoService.obtenerTodosLosEmpleados());
@@ -135,7 +143,6 @@ public class MainView extends VerticalLayout {
         }
     }
 
-    //Metodos para empleados
     private void addEmpleado() {
         Dialog dialog = new Dialog();
         empleadoForm.setEmpleado(new Empleado());
@@ -144,7 +151,7 @@ public class MainView extends VerticalLayout {
         Button saveButton = new Button("Guardar", event -> {
             Empleado empleado = empleadoForm.binder.getBean();
             empleadoService.guardarEmpleado(empleado);
-            configurarDatosGrids(); //Refresca los datos
+            configurarDatosGrids();
             dialog.close();
         });
         dialog.add(saveButton);
@@ -154,7 +161,7 @@ public class MainView extends VerticalLayout {
     private void editEmpleado() {
         Empleado empleadoSeleccionado = empleadoGrid.asSingleSelect().getValue();
 
-        if (empleadoSeleccionado != null){
+        if (empleadoSeleccionado != null) {
             Dialog dialog = new Dialog();
             empleadoForm.setEmpleado(empleadoSeleccionado);
             dialog.add(empleadoForm);
@@ -162,7 +169,7 @@ public class MainView extends VerticalLayout {
             Button saveButton = new Button("Guardar", event -> {
                 Empleado empleado = empleadoForm.binder.getBean();
                 empleadoService.guardarEmpleado(empleado);
-                configurarDatosGrids(); //Refresca los datos
+                configurarDatosGrids();
                 dialog.close();
             });
             dialog.add(saveButton);
@@ -183,7 +190,6 @@ public class MainView extends VerticalLayout {
         }
     }
 
-    //Metodos para departamentos
     private void addDepartamento() {
         Dialog dialog = new Dialog();
         departamentoForm.setDepartamento(new Departamento());
@@ -192,7 +198,12 @@ public class MainView extends VerticalLayout {
         Button saveButton = new Button("Guardar", event -> {
             Departamento departamento = departamentoForm.binder.getBean();
             departamentoService.guardarDepartamento(departamento);
-            configurarDatosGrids(); //Refresca los datos
+            configurarDatosGrids();
+
+            // Actualiza la lista de departamentos en el formulario de empleados
+            List<Departamento> departamentos = departamentoService.obtenerTodosLosDepartamentos();
+            empleadoForm.departamento.setItems(departamentos);
+
             dialog.close();
         });
         dialog.add(saveButton);
@@ -202,7 +213,7 @@ public class MainView extends VerticalLayout {
     private void editDepartamento() {
         Departamento departamentoSeleccionado = departamentoGrid.asSingleSelect().getValue();
 
-        if (departamentoSeleccionado != null){
+        if (departamentoSeleccionado != null) {
             Dialog dialog = new Dialog();
             departamentoForm.setDepartamento(departamentoSeleccionado);
             dialog.add(departamentoForm);
@@ -210,7 +221,11 @@ public class MainView extends VerticalLayout {
             Button saveButton = new Button("Guardar", event -> {
                 Departamento departamento = departamentoForm.binder.getBean();
                 departamentoService.guardarDepartamento(departamento);
-                configurarDatosGrids(); //Refresca los datos
+                configurarDatosGrids();
+                // Actualiza la lista de departamentos en el formulario de empleados
+                List<Departamento> departamentos = departamentoService.obtenerTodosLosDepartamentos();
+                empleadoForm.departamento.setItems(departamentos);
+
                 dialog.close();
             });
             dialog.add(saveButton);
@@ -221,17 +236,23 @@ public class MainView extends VerticalLayout {
         }
     }
 
+
+
     private void deleteDepartamento() {
         Departamento departamentoSeleccionado = departamentoGrid.asSingleSelect().getValue();
         if (departamentoSeleccionado != null) {
             departamentoService.eliminarDepartamento(departamentoSeleccionado.getId());
             configurarDatosGrids();
+
+            // Actualiza la lista de departamentos en el formulario de empleados
+            List<Departamento> departamentos = departamentoService.obtenerTodosLosDepartamentos();
+            empleadoForm.departamento.setItems(departamentos);
+
         } else {
             Notification.show("Selecciona un departamento para eliminar.");
         }
     }
 
-    //Metodos para proyectos
     private void addProyecto() {
         Dialog dialog = new Dialog();
         proyectoForm.setProyecto(new Proyecto());
@@ -239,18 +260,34 @@ public class MainView extends VerticalLayout {
 
         Button saveButton = new Button("Guardar", event -> {
             Proyecto proyecto = proyectoForm.binder.getBean();
+
+            // Obtener el empleado seleccionado del Select en ProyectoForm
+            Empleado empleadoSeleccionado = proyectoForm.empleadosSelect.getValue();
+
+            // Asegurarse de que se seleccionó un empleado
+            if (empleadoSeleccionado != null) {
+                // Asignar el empleado al proyecto (si aún no está en la lista)
+                if (proyecto.getEmpleados() == null ) { // Si no se inicializo antes, hay que hacerlo
+                    proyecto.setEmpleados(new java.util.ArrayList<>()); // Inicializar para evitar NullPointerException
+                }
+                if (!proyecto.getEmpleados().contains(empleadoSeleccionado)) {
+                    proyecto.getEmpleados().add(empleadoSeleccionado);
+                }
+            }
+
             proyectoService.guardarProyecto(proyecto);
-            configurarDatosGrids(); //Refresca los datos
+            configurarDatosGrids();
             dialog.close();
         });
         dialog.add(saveButton);
         dialog.open();
     }
 
+
     private void editProyecto() {
         Proyecto proyectoSeleccionado = proyectoGrid.asSingleSelect().getValue();
 
-        if (proyectoSeleccionado != null){
+        if (proyectoSeleccionado != null) {
             Dialog dialog = new Dialog();
             proyectoForm.setProyecto(proyectoSeleccionado);
             dialog.add(proyectoForm);
@@ -258,7 +295,7 @@ public class MainView extends VerticalLayout {
             Button saveButton = new Button("Guardar", event -> {
                 Proyecto proyecto = proyectoForm.binder.getBean();
                 proyectoService.guardarProyecto(proyecto);
-                configurarDatosGrids(); //Refresca los datos
+                configurarDatosGrids();
                 dialog.close();
             });
             dialog.add(saveButton);
